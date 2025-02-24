@@ -1,0 +1,5 @@
+uv add langchain_google_genai
+uv add langchain_openai
+uv add python-dotenv
+uv add langchain_core
+uv add langchain_community
