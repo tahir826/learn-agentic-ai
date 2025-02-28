@@ -1,5 +1,11 @@
-uv add langchain_google_genai
-uv add langchain_openai
-uv add python-dotenv
-uv add langchain_core
-uv add langchain_community
+langchain
+langchain_core
+langchain_google_genai
+langchain_community
+
+
+
+
+
+python -m venv myenv
+myenv\Scripts\activate
