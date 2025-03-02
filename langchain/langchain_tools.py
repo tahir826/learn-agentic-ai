@@ -111,7 +111,7 @@ print("output",output)
 # from langchain_core.runnables import RunnableSequence
 
 
-# llm = GoogleGenerativeAI(model="gemini-1.5-flash", google_api_key="AIzaSyDIrIP-uFh7gZzjV_PUvHwOG6SE1xzpLuc")
+# llm = GoogleGenerativeAI(model="gemini-1.5-flash", google_api_key="")
 
 # prompt_template = PromptTemplate(
 #     input_variables=["input"],
