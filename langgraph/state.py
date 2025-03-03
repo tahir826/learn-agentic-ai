@@ -33,7 +33,7 @@ def deposit_money(name:str , bank_account:str, amount:int) -> dict:
 
 llm_with_tools = llm.bind_tools([deposit_money])
 
-print(call_llm({"messages": [HumanMessage(content=f"deposite 1000 usdt in tahirs account and its account no. is 12333")]}))
+# print(call_llm({"messages": [HumanMessage(content=f"deposite 1000 usdt in tahirs account and its account no. is 12333")]}))
 
 
 builder : StateGraph = StateGraph(LastMessageState)
@@ -45,4 +45,5 @@ builder.add_edge("call_llm_with_tools", END)
 
 graph = builder.compile()
 
-graph.invoke({"messages" : [HumanMessage(content="deposite 100 doller in tahirs account and account number is 3355544")]})
+final=graph.invoke({"messages" : [HumanMessage(content="deposite 100 doller in tahirs account and account number is 3355544")]})
+print(final)
