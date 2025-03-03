@@ -13,4 +13,5 @@ dependencies = [
     "crewai",
     "crewai-tools",
     "langgraph>=0.3.2",
+    "typing-extensions>=4.12.2",
 ]

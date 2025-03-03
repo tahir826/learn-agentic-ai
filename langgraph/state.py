@@ -2,14 +2,14 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import StateGraph, START, END
 from langchain_core.messages.human import HumanMessage
 from dotenv import load_dotenv
-from typing_extensions import TypeDict
+from typing_extensions import TypedDict
 import os
 load_dotenv()
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-1.5-flash", google_api_key=os.getenv("GOOGLE_API_KEY"))
 
-class LastMessageState(TypeDict):
+class LastMessageState(TypedDict):
     messages: list
 
 def call_llm(state: LastMessageState):
@@ -40,8 +40,8 @@ builder : StateGraph = StateGraph(LastMessageState)
 
 builder.add_node("call_llm_with_tools", call_llm)
 
-builder.add_edges(START, "call_llm_with_tools")
-builder.add_edges("call_llm_with_tools", END)
+builder.add_edge(START, "call_llm_with_tools")
+builder.add_edge("call_llm_with_tools", END)
 
 graph = builder.compile()
 
