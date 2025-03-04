@@ -12,14 +12,9 @@ llm = GoogleGenerativeAI(model="gemini-2.0-flash", google_api_key=os.getenv("GOO
 
 memory = ConversationBufferWindowMemory(k=5)
 
-loader = TextLoader("./data/data.txt", encoding="utf-8")
+file = TextLoader("./data/data.txt", encoding="utf-8")
 
-# try:
-#     loader = TextLoader("./data/data.txt")
-# except Exception as e:
-#     print("Error while loading file=", e)
-
-if loader is None:
+if file is None:
     raise ValueError("Failed to load the file.")
 
 text_splitter1 = CharacterTextSplitter(chunk_size=500, chunk_overlap=100)
@@ -32,12 +27,12 @@ index_creator = VectorstoreIndexCreator(
     embedding=embedding1,
     text_splitter=text_splitter1
 )
-store = index_creator.from_loaders([loader])
+final_rag_app = index_creator.from_loaders([file])
 
 # Query the index with the LLM
 while True:
     human_message = input("How can I help you today? ")
     if input == "exit":
         break
-    response = store.query(human_message, llm=llm, memory=memory)
+    response = final_rag_app.query(human_message, llm=llm, memory=memory)
     print(response)

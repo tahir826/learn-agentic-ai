@@ -7,6 +7,7 @@ load_dotenv()
 llm = ChatGoogleGenerativeAI(
     model="gemini-1.5-flash", google_api_key=os.getenv("GOOGLE_API_KEY"))
 
+
 def deposit_money(name:str , bank_account:str, amount:int) -> dict:
     """Deposit Money in Bank Account
     Args:
@@ -17,11 +18,10 @@ def deposit_money(name:str , bank_account:str, amount:int) -> dict:
         dict: a dict
     """
     return {
-        "status":f"Successfully Deposited {amount} in {bank_account} for {name}"
-    }
+        "status":f"Successfully Deposited {amount} in {bank_account} for {name}"}
 
-llm_with_tools = llm.bind_tools([deposit_money])
+toolwalallm = llm.bind_tools([deposit_money])
 
-call = llm_with_tools.invoke([HumanMessage(content=f"deposite 1000 usdt in tahirs account and its account no. is 12333")])
+finalOutput = toolwalallm.invoke([HumanMessage(content=f"hi")])
 
-print(call)
+print(finalOutput)
