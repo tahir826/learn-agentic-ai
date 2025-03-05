@@ -1,0 +1,488 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNwJjNY0qk0zxQbCk2emgJv",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/tahir826/learn-agentic-ai/blob/master/chain_reducer\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "V24EYnf8cGHM"
+      },
+      "outputs": [],
+      "source": [
+        "%%capture --no-stderr\n",
+        "%pip install --quiet -U langchain-google-genai langchain_core langgraph"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from pprint import pprint\n",
+        "from langchain_core.messages import AIMessage, HumanMessage\n",
+        "\n",
+        "messages = [AIMessage(content=f\"So you said you were researching ocean mammals?\", name=\"Model\")]\n",
+        "messages.append(HumanMessage(content=f\"Yes, that's right.\",name=\"Lance\"))\n",
+        "messages.append(AIMessage(content=f\"Great, what would you like to learn about.\", name=\"Model\"))\n",
+        "messages.append(HumanMessage(content=f\"I want to learn about the best place to see Orcas in the US.\", name=\"Lance\"))\n",
+        "\n",
+        "for m in messages:\n",
+        "    m.pretty_print()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "E-yE6YvjgcwZ",
+        "outputId": "ffbad45f-295e-4199-d395-a5f46a040101"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "==================================\u001b[1m Ai Message \u001b[0m==================================\n",
+            "Name: Model\n",
+            "\n",
+            "So you said you were researching ocean mammals?\n",
+            "================================\u001b[1m Human Message \u001b[0m=================================\n",
+            "Name: Lance\n",
+            "\n",
+            "Yes, that's right.\n",
+            "==================================\u001b[1m Ai Message \u001b[0m==================================\n",
+            "Name: Model\n",
+            "\n",
+            "Great, what would you like to learn about.\n",
+            "================================\u001b[1m Human Message \u001b[0m=================================\n",
+            "Name: Lance\n",
+            "\n",
+            "I want to learn about the best place to see Orcas in the US.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from google.colab import userdata\n",
+        "google_api_key = userdata.get('GOOGLE_API_KEY')"
+      ],
+      "metadata": {
+        "id": "Iz2xFXJngeHJ"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from langchain_google_genai import ChatGoogleGenerativeAI\n",
+        "llm: ChatGoogleGenerativeAI = ChatGoogleGenerativeAI(model=\"gemini-1.5-flash\", api_key=google_api_key)\n",
+        "result = llm.invoke(messages)\n",
+        "type(result)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 186
+        },
+        "id": "gDuqTuBvgnfp",
+        "outputId": "6595d331-fbfb-4c37-dca3-e60fa1b75895"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "langchain_core.messages.ai.AIMessage"
+            ],
+            "text/html": [
+              "<div style=\"max-width:800px; border: 1px solid var(--colab-border-color);\"><style>\n",
+              "      pre.function-repr-contents {\n",
+              "        overflow-x: auto;\n",
+              "        padding: 8px 12px;\n",
+              "        max-height: 500px;\n",
+              "      }\n",
+              "\n",
+              "      pre.function-repr-contents.function-repr-contents-collapsed {\n",
+              "        cursor: pointer;\n",
+              "        max-height: 100px;\n",
+              "      }\n",
+              "    </style>\n",
+              "    <pre style=\"white-space: initial; background:\n",
+              "         var(--colab-secondary-surface-color); padding: 8px 12px;\n",
+              "         border-bottom: 1px solid var(--colab-border-color);\"><b>langchain_core.messages.ai.AIMessage</b><br/>def __init__(content: Union[str, list[Union[str, dict]]], **kwargs: Any) -&gt; None</pre><pre class=\"function-repr-contents function-repr-contents-collapsed\" style=\"\"><a class=\"filepath\" style=\"display:none\" href=\"#\">/usr/local/lib/python3.11/dist-packages/langchain_core/messages/ai.py</a>Message from an AI.\n",
+              "\n",
+              "AIMessage is returned from a chat model as a response to a prompt.\n",
+              "\n",
+              "This message represents the output of the model and consists of both\n",
+              "the raw output as returned by the model together standardized fields\n",
+              "(e.g., tool calls, usage metadata) added by the LangChain framework.</pre>\n",
+              "      <script>\n",
+              "      if (google.colab.kernel.accessAllowed && google.colab.files && google.colab.files.view) {\n",
+              "        for (const element of document.querySelectorAll('.filepath')) {\n",
+              "          element.style.display = 'block'\n",
+              "          element.onclick = (event) => {\n",
+              "            event.preventDefault();\n",
+              "            event.stopPropagation();\n",
+              "            google.colab.files.view(element.textContent, 141);\n",
+              "          };\n",
+              "        }\n",
+              "      }\n",
+              "      for (const element of document.querySelectorAll('.function-repr-contents')) {\n",
+              "        element.onclick = (event) => {\n",
+              "          event.preventDefault();\n",
+              "          event.stopPropagation();\n",
+              "          element.classList.toggle('function-repr-contents-collapsed');\n",
+              "        };\n",
+              "      }\n",
+              "      </script>\n",
+              "      </div>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 12
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "result"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "TieldFHtgqao",
+        "outputId": "c61d4074-9cea-42ca-ae3e-354c440792f9"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "AIMessage(content='There\\'s no single \"best\" place to see orcas in the US, as it depends on the time of year and what kind of viewing experience you\\'re hoping for.  Orcas, or killer whales, have different populations with varying ranges.  However, some of the most popular and reliable locations include:\\n\\n* **Washington State (San Juan Islands):** This is arguably the most famous and consistently reliable place to see orcas in the US.  The resident orca pods, particularly the Southern Resident killer whales (J, K, and L pods), are frequently sighted here, especially during the summer months.  Whale watching tours operate frequently from Friday Harbor, Anacortes, and other locations.  The downside is that it can be crowded, and sightings aren\\'t guaranteed.\\n\\n* **Alaska:**  Alaska boasts several orca populations, including transient orcas that hunt seals and sea lions, and resident orcas.  Specific locations like Southeast Alaska (Juneau, Ketchikan) and Prince William Sound offer excellent opportunities, particularly during the summer.  Tours are available, but the scale and remoteness often mean a more wilderness-oriented experience.\\n\\n* **California (Northern California Coast):**  While less consistent than Washington or Alaska, Northern California, particularly around Monterey Bay and the Channel Islands, offers chances to see transient orcas.  Sightings are less frequent and more dependent on the whales\\' movements.\\n\\n**Factors to consider when choosing a location:**\\n\\n* **Time of year:**  Summer generally offers the best chances for sightings in most locations, as orcas are more active and predictable in their movements.\\n* **Type of orca:**  Do you want to see resident orcas (like the Southern Residents in Washington) or transient orcas?  This will influence your location choice.\\n* **Type of experience:**  Do you prefer a guided tour with a boat, or a more independent kayaking or land-based viewing experience?\\n* **Budget:**  Tours can range significantly in price.\\n\\nTo help me narrow down the best place *for you*, tell me:\\n\\n* **When are you planning to go?**\\n* **What kind of experience are you looking for (guided tour, kayaking, etc.)?**\\n* **How important is a guaranteed sighting?** (Remember, wildlife viewing is never 100% guaranteed.)\\n\\nWith more information, I can give you a more specific recommendation.', additional_kwargs={}, response_metadata={'prompt_feedback': {'block_reason': 0, 'safety_ratings': []}, 'finish_reason': 'STOP', 'safety_ratings': []}, id='run-47ccc485-ddb1-4c99-9676-2156ecf916ae-0', usage_metadata={'input_tokens': 42, 'output_tokens': 502, 'total_tokens': 544, 'input_token_details': {'cache_read': 0}})"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 13
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "result.response_metadata"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "l-CWgjRBgvhQ",
+        "outputId": "3936f6ec-610d-4f53-fb45-7c1abad9fcaf"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "{'prompt_feedback': {'block_reason': 0, 'safety_ratings': []},\n",
+              " 'finish_reason': 'STOP',\n",
+              " 'safety_ratings': []}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 14
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def multiply(a: int, b: int) -> int:\n",
+        "    \"\"\"Multiply a and b.\n",
+        "\n",
+        "    Args:\n",
+        "        a: first int\n",
+        "        b: second int\n",
+        "    \"\"\"\n",
+        "    return a * b\n",
+        "\n",
+        "llm_with_tools: ChatGoogleGenerativeAI = llm.bind_tools([multiply])"
+      ],
+      "metadata": {
+        "id": "v0GjyOnOg0BA"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "function_call = llm_with_tools.invoke([HumanMessage(content=f\"What is 2 multiplied by 3\", name=\"Lance\")])\n",
+        "function_call"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "yuX2RTYQg4Uy",
+        "outputId": "ab0bce45-5c79-4494-b2cc-e3704508df69"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "AIMessage(content='', additional_kwargs={'function_call': {'name': 'multiply', 'arguments': '{\"a\": 2.0, \"b\": 3.0}'}}, response_metadata={'prompt_feedback': {'block_reason': 0, 'safety_ratings': []}, 'finish_reason': 'STOP', 'safety_ratings': []}, id='run-f2dd5c69-8746-4090-bbda-eba3c7f5a404-0', tool_calls=[{'name': 'multiply', 'args': {'a': 2.0, 'b': 3.0}, 'id': 'b4ee8465-d200-42d8-b2e0-93e74ad82f87', 'type': 'tool_call'}], usage_metadata={'input_tokens': 22, 'output_tokens': 3, 'total_tokens': 25, 'input_token_details': {'cache_read': 0}})"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 16
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "function_call.additional_kwargs['function_call']"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "pRruh-Zug8Bv",
+        "outputId": "07d6052c-7494-4855-f69b-62cf58db89d6"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "{'name': 'multiply', 'arguments': '{\"a\": 2.0, \"b\": 3.0}'}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 17
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from typing_extensions import TypedDict\n",
+        "from langchain_core.messages import AnyMessage\n",
+        "\n",
+        "class MessagesState(TypedDict):\n",
+        "    messages: list[AnyMessage]"
+      ],
+      "metadata": {
+        "id": "4vtgIrR3g-ek"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from typing import Annotated\n",
+        "from langgraph.graph.message import add_messages\n",
+        "\n",
+        "class MessagesState(TypedDict):\n",
+        "    messages: Annotated[list[AnyMessage], add_messages]"
+      ],
+      "metadata": {
+        "id": "xgB8RZsihCd0"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "from langgraph.graph import MessagesState\n",
+        "\n",
+        "class MessagesState(MessagesState):\n",
+        "    # Add any keys needed beyond messages, which is pre-built\n",
+        "    pass"
+      ],
+      "metadata": {
+        "id": "UjbkjqWLhEtP"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Initial state\n",
+        "initial_messages = [AIMessage(content=\"Hello! How can I assist you?\", name=\"Model\"),\n",
+        "                    HumanMessage(content=\"I'm looking for information on marine biology.\", name=\"Lance\")\n",
+        "                   ]\n",
+        "\n",
+        "# New message to add\n",
+        "new_message = AIMessage(content=\"Sure, I can help with that. What specifically are you interested in?\", name=\"Model\")\n",
+        "\n",
+        "# Test\n",
+        "add_messages(initial_messages , new_message)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "AIN3drPbhHzJ",
+        "outputId": "6bad319d-910b-419d-f197-f573f2588100"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[AIMessage(content='Hello! How can I assist you?', additional_kwargs={}, response_metadata={}, name='Model', id='e9b0e9dd-efd4-42f0-8a9e-c60002bdd862'),\n",
+              " HumanMessage(content=\"I'm looking for information on marine biology.\", additional_kwargs={}, response_metadata={}, name='Lance', id='ed203b95-0963-4814-8271-e324f73b847a'),\n",
+              " AIMessage(content='Sure, I can help with that. What specifically are you interested in?', additional_kwargs={}, response_metadata={}, name='Model', id='7c697335-cfb1-41f6-9564-12bd59f4a033')]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 21
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from IPython.display import Image, display\n",
+        "from langgraph.graph import StateGraph, START, END\n",
+        "from langgraph.graph.state import CompiledStateGraph\n",
+        "\n",
+        "# Node\n",
+        "def tool_calling_llm(state: MessagesState):\n",
+        "    return {\"messages\": [llm_with_tools.invoke(state[\"messages\"])]}\n",
+        "\n",
+        "# Build graph\n",
+        "builder: StateGraph = StateGraph(MessagesState)\n",
+        "builder.add_node(\"tool_calling_llm\", tool_calling_llm)\n",
+        "builder.add_edge(START, \"tool_calling_llm\")\n",
+        "builder.add_edge(\"tool_calling_llm\", END)\n",
+        "graph: CompiledStateGraph  = builder.compile()\n",
+        "\n",
+        "# View\n",
+        "display(Image(graph.get_graph().draw_mermaid_png()))"
+      ],
+      "metadata": {
+        "id": "CzKy3rSghMpT"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "messages = graph.invoke({\"messages\": HumanMessage(content=\"Hello!\")})\n",
+        "for m in messages['messages']:\n",
+        "    m.pretty_print()"
+      ],
+      "metadata": {
+        "id": "ZvwM5iKxhPuL"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "messages = graph.invoke({\"messages\": HumanMessage(content=\"Multiply 4 and 2!\")})\n",
+        "for m in messages['messages']:\n",
+        "    m.pretty_print()"
+      ],
+      "metadata": {
+        "id": "rb4ICTVYhSam"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "initail_messages = [AIMessage(content=\"Hello! how can i assist you today\"),\n",
+        "                    HumanMessage(content=\"i want some basic knowledge about marine biology\")]\n",
+        "\n",
+        "new_messages = AIMessage(content=\"sure i can help you that please specify in which topic do want to assist\")\n",
+        "\n",
+        "add_messages = (initail_messages, new_messages)\n",
+        "add_messages"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "fY13HbZWcx5T",
+        "outputId": "a41a161c-86d3-4a5c-8daf-f87efcaeb41c"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "([AIMessage(content='Hello! how can i assist you today', additional_kwargs={}, response_metadata={}),\n",
+              "  HumanMessage(content='i want some basic knowledge about marine biology', additional_kwargs={}, response_metadata={})],\n",
+              " AIMessage(content='sure i can help you that please specify in which topic do want to assist', additional_kwargs={}, response_metadata={}))"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 6
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from langgraph.graph import StateGraph, START, END\n",
+        "from langgraph.graph.state import CompiledStateGraph\n",
+        "\n",
+        "# Node\n",
+        "\n",
+        "def tool_calling_llm(state: MessagesState):\n",
+        "  return {\"message\":[llm_with_tools.invoke(state[\"messages\"])]}"
+      ],
+      "metadata": {
+        "id": "1M5mch9Xekuq"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
