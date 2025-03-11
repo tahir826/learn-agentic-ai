@@ -22,6 +22,6 @@ def deposit_money(name:str , bank_account:str, amount:int) -> dict:
 
 toolwalallm = llm.bind_tools([deposit_money])
 
-finalOutput = toolwalallm.invoke([HumanMessage(content=f"hi")])
+finalOutput = toolwalallm.invoke([HumanMessage(content=f"Deposit 1000 in 1234567890 for John")])
 
 print(finalOutput)
