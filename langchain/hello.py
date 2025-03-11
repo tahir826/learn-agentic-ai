@@ -8,4 +8,3 @@ llm1 = OpenAI(
 
 response = llm1.invoke("hi")
 print(response)
-
