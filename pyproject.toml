@@ -16,4 +16,5 @@ dependencies = [
     "typing-extensions>=4.12.2",
     "ipykernel>=6.29.5",
     "bs4>=0.0.2",
+    "faiss-cpu>=1.10.0",
 ]

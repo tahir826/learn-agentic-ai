@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize the LLM with GoogleGenerativeAI
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash",
+llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash",
                          google_api_key=os.getenv("GOOGLE_API_KEY"))
 
 search = TavilySearchResults(tavily_api_key=os.getenv("TAVILY_API_KEY"))

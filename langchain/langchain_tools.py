@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 llm = GoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=os.getenv("GOOGLE_API_KEY"))
-
+API_KEY="660d1420ce14675beb4c3c59f08b2750"
 prompt_template = PromptTemplate(
     input_variables=["input"],
     template="You are a tool caller, you have to call the the tool named add_numbers_tool in case if there is any addition required, please don't send any explanation while calling the function, just send the two numbers what users provided e.g 5,2, even though user give the the sentance you have to find two numbers and pass to the functions, user input is: {input}\n")
