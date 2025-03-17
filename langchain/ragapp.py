@@ -1,15 +1,14 @@
-from langchain.agents import AgentExecutor
 from langchain.agents import create_tool_calling_agent
+from langchain.agents import AgentExecutor
 from langchain_google_genai import ChatGoogleGenerativeAI,GoogleGenerativeAIEmbeddings
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import WebBaseLoader
-from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
 from langchain.tools.retriever import create_retriever_tool
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain import hub
-from langchain.tools import tool
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -22,12 +21,10 @@ search = TavilySearchResults(tavily_api_key=os.getenv("TAVILY_API_KEY"))
 
 loader = WebBaseLoader("https://www.techloset.com/")
 docs = loader.load()
-documents = RecursiveCharacterTextSplitter(
-    chunk_size=1000, chunk_overlap=200
-).split_documents(docs)
-vector = FAISS.from_documents(documents, GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
+documents = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200).split_documents(docs)
+vector1 = FAISS.from_documents(documents, GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
 
-retriever = vector.as_retriever()
+retriever = vector1.as_retriever()
 
 retriever_tool = create_retriever_tool(
     retriever,
@@ -36,18 +33,7 @@ retriever_tool = create_retriever_tool(
 )
 
 
-@tool
-def add_numbers_tool(input_data: str) -> str:
-    """ addition of two numbers. """
-    print("add_numbers_tool input_data",input_data)
-    try:
-        numbers = input_data.split(',')
-    except Exception as e:
-        return input_data
-    
-    num1, num2 = int(numbers[0]), int(numbers[1])
-    result = num1 + num2
-    return f"The Sum of {num1} and {num2} is {result}"
+
 
 tools = [search, retriever_tool]
 
